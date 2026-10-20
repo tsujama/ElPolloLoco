@@ -1,39 +1,61 @@
 class World {
     character = new Character();
-    enemies = [
-        new Chicken(),
-        new Chicken(),
-        new Chicken()
-    ];
-    clouds = [
-        new Cloud()
-    ];
-    ctx;
+    enemies = level1.enemies;
+    clouds = level1.clouds;
 
-    constructor(canvas) {
+    backgroundObjects = level1.backgroundObjects;
+    ctx;
+    keyboard;
+    camera_x = 0;
+
+    constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
+        this.keyboard = keyboard;
         this.draw();
+        this.setWorld();
+    }
+
+    setWorld() {
+        this.character.world = this;
     }
     
     draw() {
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.clouds.forEach(cloud => {
-            this.ctx.drawImage(cloud.img, cloud.positionX, cloud.positionY, cloud.width, cloud.height);
-        })
+        this.ctx.translate(this.camera_x, 0);
 
-        this.ctx.drawImage(this.character.img, this.character.positionX, this.character.positionY, this.character.width, this.character.height);
-        
+        this.addObjectsToMap(this.backgroundObjects);
+        this.addObjectsToMap(this.clouds);
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.enemies);
 
-        this.enemies.forEach(enemy => {
-            this.ctx.drawImage(enemy.img, enemy.positionX, enemy.positionY, enemy.width, enemy.height);
-        })
+        this.ctx.translate(-this.camera_x, 0);
 
         let self = this;
         requestAnimationFrame(function() {
             self.draw();
         });
+    }
+
+    addObjectsToMap(objects) {
+        objects.forEach(object => {
+            this.addToMap(object);
+        });
+    }
+
+    addToMap(movableObject) {
+        if (movableObject.otherDirection) {
+            this.ctx.save();
+            this.ctx.translate(movableObject.width, 0);
+            this.ctx.scale(-1, 1);
+            movableObject.positionX = movableObject.positionX * -1;
+        }
+        this.ctx.drawImage(movableObject.img, movableObject.positionX, movableObject.positionY, movableObject.width, movableObject.height);
+        if (movableObject.otherDirection) {
+            movableObject.positionX = movableObject.positionX * -1;
+            this.ctx.restore();
+        }
     }
 }
