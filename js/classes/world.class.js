@@ -1,9 +1,6 @@
 class World {
     character = new Character();
-    enemies = level1.enemies;
-    clouds = level1.clouds;
-
-    backgroundObjects = level1.backgroundObjects;
+    level = level1;
     ctx;
     keyboard;
     camera_x = 0;
@@ -12,8 +9,9 @@ class World {
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
         this.keyboard = keyboard;
-        this.draw();
+
         this.setWorld();
+        this.draw();
     }
 
     setWorld() {
@@ -26,10 +24,12 @@ class World {
 
         this.ctx.translate(this.camera_x, 0);
 
-        this.addObjectsToMap(this.backgroundObjects);
-        this.addObjectsToMap(this.clouds);
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.statusbar);
         this.addToMap(this.character);
-        this.addObjectsToMap(this.enemies);
+        this.addObjectsToMap(this.level.enemies);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -53,6 +53,13 @@ class World {
             movableObject.positionX = movableObject.positionX * -1;
         }
         this.ctx.drawImage(movableObject.img, movableObject.positionX, movableObject.positionY, movableObject.width, movableObject.height);
+
+        this.ctx.beginPath();
+        this.ctx.lineWidth = "10";
+        this.ctx.strokeStyle = "blue";
+        this.ctx.rect(50, 50, 150, 80);
+        this.ctx.stroke();
+
         if (movableObject.otherDirection) {
             movableObject.positionX = movableObject.positionX * -1;
             this.ctx.restore();
