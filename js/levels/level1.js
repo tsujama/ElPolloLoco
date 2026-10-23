@@ -16,11 +16,6 @@ const level1 = new Level(
     new Coins(2100, 0),
 ],
 [
-    new Statusbar("img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png", 0),
-    new Statusbar("img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png", 40),
-    new Statusbar("img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png", 80)
-],
-[
     new BackgroundObjects("img/5_background/layers/air.png", -720),
     new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", -720),
     new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", -720),

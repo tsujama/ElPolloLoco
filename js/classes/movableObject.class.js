@@ -5,6 +5,8 @@ class MovableObject extends DrawableObject {
     speedY = 0;
     acceleration = 2.5;
     life = 100;
+    coins = 0;
+    bottles = 0;
     lastHit = 0;
 
     applyGravity() {
@@ -17,18 +19,13 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        return this.positionY < 180;
-    }
-
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken) {
-           ctx.beginPath();
-            ctx.lineWidth = "5";
-            ctx.strokeStyle = "blue";
-            ctx.rect(this.positionX, this.positionY, this.width, this.height);
-            ctx.stroke(); 
+        if (this instanceof ThrowableObject) { // throwable object should always fall
+            return true;
+        } else {
+            return this.positionY < 180;
         }
     }
+
     // character.isColliding(chicken);
     isColliding(movableObject) {
         return this.positionX + this.width > movableObject.positionX &&
@@ -36,6 +33,12 @@ class MovableObject extends DrawableObject {
         this.positionX < movableObject.positionX + movableObject.width &&
         this.positionY < movableObject.positionY + movableObject.height;
     };
+
+    collectCoins() {
+        if(this.coins < 100) {
+            this.coins += 20;
+        }
+    }
 
     hit() {
         this.life -= 5;
