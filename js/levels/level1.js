@@ -16,6 +16,9 @@ const level1 = new Level(
     new Coins(2100, 0),
 ],
 [
+    new VendingMachine()
+],
+[
     new BackgroundObjects("img/5_background/layers/air.png", -720),
     new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", -720),
     new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", -720),

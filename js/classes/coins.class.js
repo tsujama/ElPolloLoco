@@ -1,16 +1,17 @@
-class Coins extends MovableObject {
+class Coins extends DrawableObject {
 
     height = 175;
     width = 160;
 
-    IMAGES_WALKING = [
+    IMAGES_COINS = [
         "img/8_coin/coin_1.png",
         "img/8_coin/coin_2.png"
     ]
 
     constructor(positionX, positionY) {
-        super().loadImage("img/8_coin/coin_1.png");
-        this.loadImages(this.IMAGES_WALKING);
+        super();
+        this.loadImage("img/8_coin/coin_1.png");
+        this.loadImages(this.IMAGES_COINS);
 
         this.positionX = positionX;
         this.positionY = positionY;
@@ -20,7 +21,7 @@ class Coins extends MovableObject {
 
     animate() {
         setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
+            this.playAnimation(this.IMAGES_COINS);
         }, 500);
     }
 }

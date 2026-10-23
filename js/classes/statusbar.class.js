@@ -1,4 +1,4 @@
-class Statusbar extends MovableObject {
+class Statusbar extends DrawableObject {
 
     IMAGES_LIFE = [
         'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
@@ -40,21 +40,9 @@ class Statusbar extends MovableObject {
         this.height = 50;
     }
 
-    setPercentageLife(percentage) {
+    setPercentage(percentage, images) {
         this.percentage = percentage; // => 0 ... 5
-        let path = this.IMAGES_LIFE[this.resolveImageIndex()];
-        this.img = this.imageCache[path];
-    }
-
-    setPercentageCoins(percentage) {
-        this.percentage = percentage; // => 0 ... 5
-        let path = this.IMAGES_COINS[this.resolveImageIndex()];
-        this.img = this.imageCache[path];
-    }
-
-    setPercentageBottles(percentage) {
-        this.percentage = percentage; // => 0 ... 5
-        let path = this.IMAGES_BOTTLES[this.resolveImageIndex()];
+        let path = images[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 

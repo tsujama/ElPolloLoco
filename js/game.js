@@ -41,6 +41,10 @@ document.addEventListener("keydown", (event) => {
         case "f":
             keyboard.F = true;
             break;
+
+        case "e":
+            keyboard.E = true;
+            break;
     
         default:
             keyboard.SPACE = false;
@@ -49,6 +53,7 @@ document.addEventListener("keydown", (event) => {
             keyboard.DOWN = false;
             keyboard.RIGHT = false;
             keyboard.F = false;
+            keyboard.E = false;
             break;
     }
 });
@@ -79,6 +84,10 @@ document.addEventListener("keyup", (event) => {
         case "f":
             keyboard.F = false;
             break;
+
+        case "e":
+            keyboard.E = false;
+            break;
     
         default:
             keyboard.SPACE = false;
@@ -87,6 +96,7 @@ document.addEventListener("keyup", (event) => {
             keyboard.DOWN = false;
             keyboard.RIGHT = false;
             keyboard.F = false;
+            keyboard.E = false;
             break;
     }
 });

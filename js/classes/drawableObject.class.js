@@ -1,12 +1,20 @@
 class DrawableObject {
+    // Position des Objekts
     positionX = 120;
     positionY = 280;
-    height = 150;
-    width = 100;
-    img;
-    imageCache = {};
-    currentImage = 0;
 
+    // Größe des Objekts
+    width = 100;
+    height = 150;
+
+    // Bild des Objekts
+    img;
+
+    // Speicher für mehrere Bilder
+    imageCache = {};
+
+    // Aktuelles Bild einer Animation
+    currentImage = 0;
 
     //loadImage('img/test.png');
     loadImage(path) {
@@ -34,6 +42,13 @@ class DrawableObject {
             img.src = path;
             this.imageCache[path] = img;
         });  
+    }
+
+    playAnimation(images) {
+        let i = this.currentImage % images.length;
+        let path = images[i];
+        this.img = this.imageCache[path];
+        this.currentImage++;
     }
 
 }

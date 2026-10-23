@@ -14,57 +14,119 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
 
-        this.statusbar_life.setPercentageLife(100);
-        this.statusbar_coins.setPercentageCoins(0);
-        this.statusbar_bottles.setPercentageBottles(0);
+        this.statusbar_life.setPercentage(100, this.statusbar_life.IMAGES_LIFE);
+        this.statusbar_coins.setPercentage(0, this.statusbar_coins.IMAGES_COINS);
+        this.statusbar_bottles.setPercentage(0, this.statusbar_bottles.IMAGES_BOTTLES);
 
-        this.setWorld();
+        this.connectCharacterToWorld();
         this.draw();
-        this.run()
+        this.startGameLoop();
     }
 
-    setWorld() {
+    connectCharacterToWorld() {
         this.character.world = this;
     }
 
-    run() {
+    startGameLoop() {
         setInterval(() => {
             this.checkCollisions();
             this.checkCoinCollisions();
+            this.checkBottleCollisions();
+            this.checkVendingMachineCollisions();
             this.checkThrowObjects();
         }, 200);
-    }
+}
 
     checkThrowObjects() {
-        if(this.keyboard.F) {
+        if(this.keyboard.F && this.character.bottles > 0) {
             let bottle = new ThrowableObject(this.character.positionX + 100, this. character.positionY + 100);
             this.throwableObjects.push(bottle);
+            this.character.bottles -= 20;
+            this.updateStatusbar(this.statusbar_bottles, this.character.bottles, this.statusbar_bottles.IMAGES_BOTTLES);
         }
     }
 
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
-                if(this.character.isColliding(enemy) && this.character.life > 0) {
+
+            let isColliding = this.character.isColliding(enemy);
+            let isAlive = this.character.life > 0;
+            let isEnemyAlive = !enemy.isDead();
+            let isFalling = this.character.speedY < 0;
+            let characterFeet = this.character.positionY + this.character.height;
+            let previousCharacterFeet = this.character.lastCollisionFeet;
+            let enemyTop = enemy.positionY;
+            let isAboveEnemy = previousCharacterFeet !== null && previousCharacterFeet <= enemyTop && characterFeet >= enemyTop;
+
+            if (isColliding && isAlive && isEnemyAlive) {
+                if (isFalling && isAboveEnemy) {
+                    enemy.life = 0;
+                } else {
                     this.character.hit();
-                    this.statusbar_life.setPercentageLife(this.character.life, this.statusbar_life.IMAGES_LIFE);
+                    this.updateStatusbar(
+                    this.statusbar_life,
+                    this.character.life,
+                    this.statusbar_life.IMAGES_LIFE
+                    );
                 }
+            }
         });
+        this.character.lastCollisionFeet = this.character.positionY + this.character.height;
     }
 
     checkCoinCollisions() {
         for (let i = this.level.coins.length - 1; i >= 0; i--) {
             let coin = this.level.coins[i];
 
-            if (this.character.isColliding(coin)) {
+            let isColliding = this.character.isColliding(coin);
+
+            if (isColliding) {
                 this.character.collectCoins();
 
-                this.statusbar_coins.setPercentageCoins(
-                    this.character.coins
-                );
+                this.updateStatusbar(this.statusbar_coins, this.character.coins, this.statusbar_coins.IMAGES_COINS);
 
                 this.level.coins.splice(i, 1);
             }
         }
+    }
+
+    checkBottleCollisions() {
+        this.throwableObjects.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
+                if(bottle.isColliding(enemy)) {
+                    enemy.life = 0;
+                }
+            });
+        });
+    };
+
+    checkVendingMachineCollisions() {
+
+        this.level.vendingMachine.forEach((machine) => {           
+            let isColliding = this.character.isColliding(machine);
+
+            if (isColliding && this.keyboard.E && this.character.coins >= 20 && this.character.bottles < 100) {
+                if(!machine.isAnimating) {
+                    machine.animate();
+
+                    this.character.coins -= 20;
+
+                    this.character.bottles += 20;
+
+                    //   this.statusbar_coins.setPercentage(
+                    //    this.character.coins,
+                    //    this.statusbar_coins.IMAGES_COINS
+                    //);
+                    this.updateStatusbar(this.statusbar_coins, this.character.coins, this.statusbar_coins.IMAGES_COINS);
+
+                    this.updateStatusbar(this.statusbar_bottles, this.character.bottles, this.statusbar_bottles.IMAGES_BOTTLES);
+                }
+            }  
+        });
+    }
+
+    updateStatusbar(statusbarObject, characterStat, imagePath) {
+        statusbarObject.setPercentage(characterStat, imagePath);
     }
 
     // checkBottleCollisions() {
@@ -89,29 +151,41 @@ class World {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(this.level.backgroundObjects);
+        
+        this.drawBackground();
 
         this.ctx.translate(-this.camera_x, 0);
         // --- space for fixed objects ---
-        this.addToMap(this.statusbar_life);
-        this.addToMap(this.statusbar_coins);
-        this.addToMap(this.statusbar_bottles);
+        this.drawStatusbars();
         this.ctx.translate(this.camera_x, 0);
 
-        this.addObjectsToMap(this.level.clouds);
-        this.addObjectsToMap(this.level.coins);
-        
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.throwableObjects);
+        this.drawGameObjects();
 
         this.ctx.translate(-this.camera_x, 0);
 
         // draw wird immer wieder aufgerufen.
-        let self = this;
-        requestAnimationFrame(function() {
-            self.draw();
+        requestAnimationFrame(() => {
+            this.draw();
         });
+    }
+
+    drawBackground() {
+        this.addObjectsToMap(this.level.backgroundObjects);
+    }
+
+    drawGameObjects() {
+        this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.vendingMachine);
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.throwableObjects);
+    }
+
+    drawStatusbars() {
+        this.addToMap(this.statusbar_life);
+        this.addToMap(this.statusbar_coins);
+        this.addToMap(this.statusbar_bottles);
     }
 
     addObjectsToMap(objects) {
@@ -120,29 +194,29 @@ class World {
         });
     }
 
-    addToMap(movableObject) {
-        if (movableObject.otherDirection) {
-            this.flipImage(movableObject);
+    addToMap(object) {
+        if (object.otherDirection) {
+            this.flipImage(object);
         }
 
-        movableObject.draw(this.ctx);
+        object.draw(this.ctx);
 
-        movableObject.drawFrame(this.ctx);
+        object.drawFrame(this.ctx);
 
-        if (movableObject.otherDirection) {
-            this.flipImageBack(movableObject);
+        if (object.otherDirection) {
+            this.flipImageBack(object);
         }
     }
 
-    flipImage(movableObject) {
+    flipImage(object) {
         this.ctx.save();
-        this.ctx.translate(movableObject.width, 0);
+        this.ctx.translate(object.width, 0);
         this.ctx.scale(-1, 1);
-        movableObject.positionX = movableObject.positionX * -1;
+        object.positionX = object.positionX * -1;
     }
 
-    flipImageBack(movableObject) {
-        movableObject.positionX = movableObject.positionX * -1;
+    flipImageBack(object) {
+        object.positionX = object.positionX * -1;
         this.ctx.restore();
     }
 }

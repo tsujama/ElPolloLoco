@@ -1,7 +1,8 @@
 class ThrowableObject extends MovableObject {
 
     constructor(x, y) {
-        super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
+        super();
+        this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
         this.positionX = x;
         this.positionY = y;
         this.height = 60;
@@ -10,15 +11,17 @@ class ThrowableObject extends MovableObject {
     }
 
     throwBottle() {
-        this.speedY = 30;
-        this.applyGravity();
-        console.log("Werfe Flasche");
+    this.speedY = 30;
+    this.applyGravity();
 
-        setInterval(() => {
-            this.positionX += 10;
+    let intervalId = setInterval(() => {
+        this.positionX += 10;
 
-        }, 25);
-    }
+        if (this.positionY > 480) {
+            clearInterval(intervalId);
+        }
+    }, 25);
+}
     
 
 }

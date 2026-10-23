@@ -35,14 +35,16 @@ class MovableObject extends DrawableObject {
     };
 
     collectCoins() {
+        let coinValue = 20;
+
         if(this.coins < 100) {
-            this.coins += 20;
+            this.coins += coinValue;
         }
     }
 
     hit() {
         this.life -= 5;
-        if(this.life === 0) {
+        if(this.life <= 0) {
             this.life = 0;
         } else {
             this.lastHit = new Date().getTime();
@@ -57,13 +59,6 @@ class MovableObject extends DrawableObject {
 
     isDead() {
         return this.life === 0;
-    }
-
-    playAnimation(images) {
-        let i = this.currentImage % images.length;
-        let path = images[i];
-        this.img = this.imageCache[path];
-        this.currentImage++;
     }
 
     moveRight() {
