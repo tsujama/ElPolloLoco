@@ -10,7 +10,7 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
 
     applyGravity() {
-        setInterval(() => {
+        this.gravityIntervalId = setInterval(() => {
             if(this.isAboveGround() || this.speedY > 0) {
                 this.positionY -= this.speedY;
                 this.speedY -= this.acceleration;
@@ -28,11 +28,11 @@ class MovableObject extends DrawableObject {
 
     // character.isColliding(chicken);
     isColliding(movableObject) {
-        return this.positionX + this.width > movableObject.positionX &&
-        this.positionY + this.height > movableObject.positionY &&
-        this.positionX < movableObject.positionX + movableObject.width &&
-        this.positionY < movableObject.positionY + movableObject.height;
-    };
+    return this.positionX + this.width - this.offsetRight > movableObject.positionX + movableObject.offsetLeft &&
+        this.positionY + this.height - this.offsetBottom > movableObject.positionY + movableObject.offsetTop &&
+        this.positionX + this.offsetLeft < movableObject.positionX + movableObject.width - movableObject.offsetRight &&
+        this.positionY + this.offsetTop < movableObject.positionY + movableObject.height - movableObject.offsetBottom;
+}
 
     collectCoins() {
         let coinValue = 20;

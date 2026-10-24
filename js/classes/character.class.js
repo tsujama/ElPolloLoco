@@ -40,8 +40,11 @@ class Character extends MovableObject {
             'img/2_character_pepe/5_dead/D-57.png',
         ]
         world;
-
         lastCollisionFeet = null;
+        offsetTop = 110;
+        offsetBottom = 10;
+        offsetLeft = 40;
+        offsetRight = 40;
 
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -54,13 +57,19 @@ class Character extends MovableObject {
     }
 
     animate() {
-        setInterval(() => {
+        this.movementInterval = setInterval(() => {
             this.moveCharacter();
         }, 1000 / 60);
 
-        setInterval(() => {
+        this.animationInterval = setInterval(() => {
             this.playCharacterAnimation();
         }, 100);
+    }
+
+    stopAnimation() {
+        clearInterval(this.movementInterval);
+        clearInterval(this.animationInterval);
+        clearInterval(this.gravityIntervalId);
     }
 
     moveCharacter() {

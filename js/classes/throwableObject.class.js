@@ -14,14 +14,17 @@ class ThrowableObject extends MovableObject {
     this.speedY = 30;
     this.applyGravity();
 
-    let intervalId = setInterval(() => {
-        this.positionX += 10;
+        this.intervalId = setInterval(() => {
+            this.positionX += 10;
 
-        if (this.positionY > 480) {
-            clearInterval(intervalId);
-        }
-    }, 25);
-}
-    
+            if (this.positionY > 480) {
+                clearInterval(this.intervalId);
+            }
+        }, 25);
+    }
 
+    stopMovement() {
+        clearInterval(this.intervalId);
+        clearInterval(this.gravityIntervalId);
+    }
 }

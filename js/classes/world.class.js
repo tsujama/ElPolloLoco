@@ -1,6 +1,6 @@
 class World {
     character = new Character();
-    level = level1;
+    level = createLevel1();
     ctx;
     keyboard;
     camera_x = 0;
@@ -19,6 +19,8 @@ class World {
         this.statusbar_bottles.setPercentage(0, this.statusbar_bottles.IMAGES_BOTTLES);
 
         this.connectCharacterToWorld();
+        this.connectEndbossToWorld();
+        this.startEnemyAnimations();
         this.draw();
         this.startGameLoop();
     }
@@ -27,15 +29,36 @@ class World {
         this.character.world = this;
     }
 
+    connectEndbossToWorld() {
+        this.level.enemies.forEach((enemy) => {
+            if (enemy instanceof Endboss) {
+                enemy.world = this;
+            }
+        });
+    }
+
     startGameLoop() {
-        setInterval(() => {
+        this.gameInterval = setInterval(() => {
             this.checkCollisions();
             this.checkCoinCollisions();
-            this.checkBottleCollisions();
             this.checkVendingMachineCollisions();
             this.checkThrowObjects();
+            this.checkGameOver();
         }, 200);
-}
+
+        this.collisionInterval = setInterval(() => {
+            this.checkBottleCollisions();
+            this.checkBottleGroundCollision();
+        }, 1000 / 60);
+    }
+
+    startEnemyAnimations() {
+        this.level.enemies.forEach((enemy) => {
+            if (enemy instanceof Chicken || enemy instanceof Endboss) {
+                enemy.animate();
+            }
+        });
+    }
 
     checkThrowObjects() {
         if(this.keyboard.F && this.character.bottles > 0) {
@@ -43,6 +66,7 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.bottles -= 20;
             this.updateStatusbar(this.statusbar_bottles, this.character.bottles, this.statusbar_bottles.IMAGES_BOTTLES);
+            this.keyboard.F = false;
         }
     }
 
@@ -59,7 +83,16 @@ class World {
             let isAboveEnemy = previousCharacterFeet !== null && previousCharacterFeet <= enemyTop && characterFeet >= enemyTop;
 
             if (isColliding && isAlive && isEnemyAlive) {
-                if (isFalling && isAboveEnemy) {
+                if (enemy instanceof Endboss) {
+                    if (enemy.isAttacking()) {
+                        this.character.hit();
+                        this.updateStatusbar(
+                            this.statusbar_life,
+                            this.character.life,
+                            this.statusbar_life.IMAGES_LIFE
+                        );
+                    }
+                } else if (isFalling && isAboveEnemy) {
                     enemy.life = 0;
                 } else {
                     this.character.hit();
@@ -91,14 +124,36 @@ class World {
     }
 
     checkBottleCollisions() {
-        this.throwableObjects.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
-                if(bottle.isColliding(enemy)) {
-                    enemy.life = 0;
+        for(let i = this.throwableObjects.length - 1; i >= 0; i--) {
+            let bottle = this.throwableObjects[i];
+            for (let enemy of this.level.enemies) {
+                if (bottle.isColliding(enemy) && !enemy.isDead()) {
+
+                    if (enemy instanceof Endboss) {
+                        enemy.life -= 20;
+                        enemy.lastHit = new Date().getTime();
+                    } else {
+                        enemy.life = 0;
+                    }
+
+                    bottle.stopMovement();
+                    this.throwableObjects.splice(i, 1);
+                    break;
                 }
-            });
-        });
+            }
+        } 
     };
+
+    checkBottleGroundCollision() {
+        for(let i = this.throwableObjects.length - 1; i >= 0; i--) {
+            let bottle = this.throwableObjects[i];
+
+            if(bottle.positionY > 480) {
+                bottle.stopMovement();
+                this.throwableObjects.splice(i, 1);
+            }
+        }
+    }
 
     checkVendingMachineCollisions() {
 
@@ -164,7 +219,7 @@ class World {
         this.ctx.translate(-this.camera_x, 0);
 
         // draw wird immer wieder aufgerufen.
-        requestAnimationFrame(() => {
+        this.animationFrameId = requestAnimationFrame(() => {
             this.draw();
         });
     }
@@ -218,5 +273,31 @@ class World {
     flipImageBack(object) {
         object.positionX = object.positionX * -1;
         this.ctx.restore();
+    }
+
+    checkGameOver() {
+        if (this.character.isDead()) {
+            document.getElementById("canvas").style.display = "none";
+            document.getElementById("gameOverScreen").style.display = "block";
+            this.stopGame();
+        }
+    }
+
+    stopGame() {
+        clearInterval(this.gameInterval);
+        clearInterval(this.collisionInterval);
+        cancelAnimationFrame(this.animationFrameId);
+
+        this.character.stopAnimation();
+
+        this.level.enemies.forEach((enemy) => {
+            if (enemy instanceof Chicken || enemy instanceof Endboss) {
+                enemy.stopAnimation();
+            }
+        });
+
+        this.throwableObjects.forEach((bottle) => {
+            bottle.stopMovement();
+        });
     }
 }

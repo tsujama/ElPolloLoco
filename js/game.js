@@ -5,15 +5,29 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById("canvas");
     world = new World(canvas, keyboard);
-
-    console.log("My character is ", world.character );
-
-
-
-    // character.src = '../img/2_character_pepe/2_walk/W-21.png';
-
-    // ctx.drawImage(character, 20, 20, 50, 150)
 };
+
+function startGame() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("canvas").style.display = "block";
+    init();
+}
+
+function showControls() {
+    document.getElementById("controlsScreen").style.display = "block";
+}
+
+function hideControls() {
+    document.getElementById("controlsScreen").style.display = "none";
+}
+
+function showImprint() {
+    document.getElementById("imprintScreen").style.display = "block";
+}
+
+function hideImprint() {
+    document.getElementById("imprintScreen").style.display = "none";
+}
 
 document.addEventListener("keydown", (event) => {
     
@@ -39,7 +53,9 @@ document.addEventListener("keydown", (event) => {
             break;
 
         case "f":
-            keyboard.F = true;
+            if (!event.repeat) {
+                keyboard.F = true;
+            }
             break;
 
         case "e":
@@ -100,4 +116,10 @@ document.addEventListener("keyup", (event) => {
             break;
     }
 });
+
+function restartGame() {
+    document.getElementById("gameOverScreen").style.display = "none";
+    document.getElementById("canvas").style.display = "block";
+    init();
+}
 

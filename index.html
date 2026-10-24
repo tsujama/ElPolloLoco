@@ -22,8 +22,33 @@
     <script src="./js/levels/level1.js"></script>
     <script src="./js/game.js"></script>
 </head>
-<body onload="init()">
+<body>
     <h1>El Pollo Loco</h1>
+
+    <div id="startScreen">
+        <button id="startButton" onclick="startGame()">Spiel starten</button>
+        <button id="controlsButton" onclick="showControls()">Steuerung</button>
+        <button id="imprintButton" onclick="showImprint()">Impressum</button>
+        
+        <div id="imprintScreen">
+            <h2>Impressum</h2>
+            <p>Hier kommt später dein Impressum rein.</p>
+            <button onclick="hideImprint()">Zurück</button>
+        </div>
+
+        <div id="controlsScreen">
+            <h2>Steuerung</h2>
+            <p>A / D – Laufen</p>
+            <p>Leertaste – Springen</p>
+            <p>F – Flasche werfen</p>
+            <p>E – Flaschen kaufen</p>
+            <button onclick="hideControls()">Zurück</button>
+        </div>
+    </div>
+
+    <div id="gameOverScreen">
+        <button onclick="restartGame()">Erneut spielen</button>
+    </div>
 
     <canvas id="canvas" width="720" height="480"></canvas>
 
