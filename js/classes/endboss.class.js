@@ -47,6 +47,7 @@ class Endboss extends MovableObject {
 
     world;
     deathImageIndex = 0;
+    hasThrownChicken = false;
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
@@ -56,6 +57,16 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.positionX = 2500;
+    }
+
+    throwChicken() {
+        let chicken = new ThrowableChicken(
+            this.positionX,
+            this.positionY + 150,
+            this.world.character.positionX
+        );
+
+        this.world.level.enemies.push(chicken);
     }
 
     isCharacterNearby() {
@@ -75,7 +86,10 @@ class Endboss extends MovableObject {
     }
 
     isCharacterInAttackRange() {
-        return Math.abs(this.positionX - this.world.character.positionX) < 150;
+        let bossCenter = this.positionX + this.width / 2;
+        let characterCenter = this.world.character.positionX + this.world.character.width / 2;
+
+        return Math.abs(bossCenter - characterCenter) < 200;
     }
 
     isAttacking() {
@@ -101,6 +115,16 @@ class Endboss extends MovableObject {
             } else if (this.isCharacterNearby()) {
                 this.playAnimation(this.IMAGES_ALERT);
                 this.moveTowardsCharacter();
+
+                if (!this.hasThrownChicken) {
+                    this.throwChicken();
+                    this.hasThrownChicken = true;
+
+                    setTimeout(() => {
+                        this.hasThrownChicken = false;
+                    }, 6000);
+                }
+
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }

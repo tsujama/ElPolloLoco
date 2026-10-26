@@ -92,7 +92,15 @@ class Character extends MovableObject {
     }
 
     updateCamera() {
-        this.world.camera_x = -this.positionX + 100;
+        let targetX;
+
+        if (this.otherDirection) {
+            targetX = -this.positionX + 500;
+        } else {
+            targetX = -this.positionX + 100;
+        }
+
+        this.world.camera_x += (targetX - this.world.camera_x) * 0.05;
     }
 
     playCharacterAnimation() {

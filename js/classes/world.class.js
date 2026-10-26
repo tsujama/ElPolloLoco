@@ -61,11 +61,26 @@ class World {
     }
 
     checkThrowObjects() {
-        if(this.keyboard.F && this.character.bottles > 0) {
-            let bottle = new ThrowableObject(this.character.positionX + 100, this. character.positionY + 100);
+        if (this.keyboard.F && this.character.bottles > 0) {
+            let x = this.character.otherDirection
+                ? this.character.positionX
+                : this.character.positionX + 100;
+
+            let bottle = new ThrowableObject(
+                x,
+                this.character.positionY + 100,
+                this.character.otherDirection
+            );
+
             this.throwableObjects.push(bottle);
             this.character.bottles -= 20;
-            this.updateStatusbar(this.statusbar_bottles, this.character.bottles, this.statusbar_bottles.IMAGES_BOTTLES);
+
+            this.updateStatusbar(
+                this.statusbar_bottles,
+                this.character.bottles,
+                this.statusbar_bottles.IMAGES_BOTTLES
+            );
+
             this.keyboard.F = false;
         }
     }
@@ -74,6 +89,7 @@ class World {
         this.level.enemies.forEach((enemy) => {
 
             let isColliding = this.character.isColliding(enemy);
+            let isBossAttack = enemy instanceof Endboss && enemy.isAttacking();
             let isAlive = this.character.life > 0;
             let isEnemyAlive = !enemy.isDead();
             let isFalling = this.character.speedY < 0;
@@ -82,7 +98,7 @@ class World {
             let enemyTop = enemy.positionY;
             let isAboveEnemy = previousCharacterFeet !== null && previousCharacterFeet <= enemyTop && characterFeet >= enemyTop;
 
-            if (isColliding && isAlive && isEnemyAlive) {
+            if ((isColliding || isBossAttack) && isAlive && isEnemyAlive) {
                 if (enemy instanceof Endboss) {
                     if (enemy.isAttacking()) {
                         this.character.hit();
@@ -205,18 +221,18 @@ class World {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.ctx.translate(this.camera_x, 0);
+        this.ctx.translate(Math.round(this.camera_x), 0);
         
         this.drawBackground();
 
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-Math.round(this.camera_x), 0);
         // --- space for fixed objects ---
         this.drawStatusbars();
-        this.ctx.translate(this.camera_x, 0);
+        this.ctx.translate(Math.round(this.camera_x), 0);
 
         this.drawGameObjects();
 
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-Math.round(this.camera_x), 0);
 
         // draw wird immer wieder aufgerufen.
         this.animationFrameId = requestAnimationFrame(() => {
