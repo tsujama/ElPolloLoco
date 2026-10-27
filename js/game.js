@@ -9,6 +9,7 @@ function init() {
 
 function startGame() {
     document.getElementById("startScreen").style.display = "none";
+    document.getElementById("gameContainer").style.display = "block";
     document.getElementById("canvas").style.display = "block";
     init();
 }
@@ -33,6 +34,7 @@ document.addEventListener("keydown", (event) => {
     
     switch (event.key.toLowerCase()) {
         case " ":
+            event.preventDefault();
             keyboard.SPACE = true;
             break;
 
@@ -117,9 +119,63 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
+function toggleFullscreen() {
+    let gameContainer = document.getElementById('gameContainer');
+
+    if (!document.fullscreenElement) {
+        gameContainer.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
 function restartGame() {
     document.getElementById("gameOverScreen").style.display = "none";
+    document.getElementById("gameWonScreen").style.display = "none";
     document.getElementById("canvas").style.display = "block";
+    document.getElementById("fullscreenButton").style.display = "block";
     init();
 }
+
+function backToHome() {
+    document.getElementById("gameOverScreen").style.display = "none";
+    document.getElementById("gameWonScreen").style.display = "none";
+    document.getElementById("gameContainer").style.display = "none";
+    document.getElementById("startScreen").style.display = "block";
+}
+
+function handleTouchButton(buttonId, isPressed) {
+    switch (buttonId) {
+        case "moveLeft":
+            keyboard.LEFT = isPressed;
+            break;
+        case "moveRight":
+            keyboard.RIGHT = isPressed;
+            break;
+        case "jump":
+            keyboard.SPACE = isPressed;
+            break;
+        case "throw":
+            keyboard.F = isPressed;
+            break;
+        case "buy":
+            keyboard.E = isPressed;
+            break;
+    }
+}
+
+function setupTouchButton(buttonId) {
+    let button = document.getElementById(buttonId);
+
+    button.onpointerdown = () => handleTouchButton(buttonId, true);
+    button.onpointerup = () => handleTouchButton(buttonId, false);
+    button.onpointercancel = () => handleTouchButton(buttonId, false);
+}
+
+setupTouchButton("moveLeft");
+setupTouchButton("moveRight");
+setupTouchButton("jump");
+setupTouchButton("throw");
+setupTouchButton("buy");
+
 

@@ -44,6 +44,7 @@ class World {
             this.checkVendingMachineCollisions();
             this.checkThrowObjects();
             this.checkGameOver();
+            this.checkGameWon();
         }, 200);
 
         this.collisionInterval = setInterval(() => {
@@ -93,15 +94,24 @@ class World {
             let isAlive = this.character.life > 0;
             let isEnemyAlive = !enemy.isDead();
             let isFalling = this.character.speedY < 0;
-            let characterFeet = this.character.positionY + this.character.height;
+            let characterFeet = this.character.positionY + this.character.height - this.character.offsetBottom;
             let previousCharacterFeet = this.character.lastCollisionFeet;
-            let enemyTop = enemy.positionY;
+            let enemyTop = enemy.positionY + enemy.offsetTop;
             let isAboveEnemy = previousCharacterFeet !== null && previousCharacterFeet <= enemyTop && characterFeet >= enemyTop;
 
             if ((isColliding || isBossAttack) && isAlive && isEnemyAlive) {
+                if (enemy instanceof Chicken) {
+                    console.log(
+                        "Vorherige Füße:", previousCharacterFeet,
+                        "Huhn oben:", enemyTop,
+                        "Aktuelle Füße:", characterFeet
+                    );
+                }
                 if (enemy instanceof Endboss) {
                     if (enemy.isAttacking()) {
-                        this.character.hit();
+                        if (!this.character.isHurt()) {
+                            this.character.hit();
+                        }
                         this.updateStatusbar(
                             this.statusbar_life,
                             this.character.life,
@@ -111,7 +121,9 @@ class World {
                 } else if (isFalling && isAboveEnemy) {
                     enemy.life = 0;
                 } else {
+                    if (!this.character.isHurt()) {
                     this.character.hit();
+                }
                     this.updateStatusbar(
                     this.statusbar_life,
                     this.character.life,
@@ -120,7 +132,7 @@ class World {
                 }
             }
         });
-        this.character.lastCollisionFeet = this.character.positionY + this.character.height;
+        this.character.lastCollisionFeet = this.character.positionY + this.character.height - this.character.offsetBottom;
     }
 
     checkCoinCollisions() {
@@ -295,6 +307,18 @@ class World {
         if (this.character.isDead()) {
             document.getElementById("canvas").style.display = "none";
             document.getElementById("gameOverScreen").style.display = "block";
+            document.getElementById("fullscreenButton").style.display = "none";
+            this.stopGame();
+        }
+    }
+
+    checkGameWon() {
+        let endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
+
+        if (endboss && endboss.isDead()) {
+            document.getElementById("canvas").style.display = "none";
+            document.getElementById("gameWonScreen").style.display = "block";
+            document.getElementById("fullscreenButton").style.display = "none";
             this.stopGame();
         }
     }

@@ -21,11 +21,8 @@
     <script src="./js/classes/level.class.js"></script>
     <script src="./js/classes/endboss.class.js"></script>
     <script src="./js/levels/level1.js"></script>
-    <script src="./js/game.js"></script>
 </head>
 <body>
-    <h1>El Pollo Loco</h1>
-
     <div id="startScreen">
         <button id="startButton" onclick="startGame()">Spiel starten</button>
         <button id="controlsButton" onclick="showControls()">Steuerung</button>
@@ -33,25 +30,73 @@
         
         <div id="imprintScreen">
             <h2>Impressum</h2>
-            <p>Hier kommt später dein Impressum rein.</p>
+
+            <p>El Pollo Loco – Portfolio-Projekt</p>
+            <p>Dieses Spiel wurde im Rahmen meiner Webentwicklungs-Ausbildung erstellt.</p>
+            <p>Die verwendeten Spielgrafiken dienen ausschließlich zu Lern- und Demonstrationszwecken.</p>
+
             <button onclick="hideImprint()">Zurück</button>
         </div>
 
         <div id="controlsScreen">
             <h2>Steuerung</h2>
-            <p>A / D – Laufen</p>
-            <p>Leertaste – Springen</p>
-            <p>F – Flasche werfen</p>
-            <p>E – Flaschen kaufen</p>
+
+            <div class="desktopControls">
+                <p>A / D – Laufen</p>
+                <p>Leertaste – Springen</p>
+                <p>F – Flasche werfen</p>
+                <p>E – Flaschen kaufen</p>
+            </div>
+
+            <div class="touchControls">
+                <p>◀ / ▶ – Laufen</p>
+                <p>▲ – Springen</p>
+                <p>🍾 – Flasche werfen</p>
+                <p>E – Flaschen kaufen</p>
+            </div>
+
             <button onclick="hideControls()">Zurück</button>
         </div>
     </div>
 
     <div id="gameOverScreen">
         <button onclick="restartGame()">Erneut spielen</button>
+        <button onclick="backToHome()">Zum Startbildschirm</button>
     </div>
 
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <div id="gameWonScreen">
+        <button onclick="restartGame()">Erneut spielen</button>
+        <button onclick="backToHome()">Zum Startbildschirm</button>
+    </div>
 
+    <div id="gameContainer">
+        <canvas id="canvas" width="720" height="480"></canvas>
+
+        <div id="mobileControls">
+            <div class="controlGroup">
+                <button id="moveLeft">◀</button>
+                <button id="moveRight">▶</button>
+            </div>
+
+            <div class="controlGroup">
+                <button id="buy">E</button>
+                <button id="throw">🍾</button>
+                <button id="jump">▲</button>
+            </div>
+        </div>
+
+        <button id="fullscreenButton"
+                onclick="toggleFullscreen()"
+                aria-label="Vollbild umschalten"
+                title="Vollbild">
+            ⛶
+        </button>
+    </div>
+
+<div id="rotateScreen">
+    <p>📱 Bitte drehe dein Gerät ins Querformat, um zu spielen.</p>
+</div>
+
+<script src="./js/game.js"></script>
 </body>
 </html>
