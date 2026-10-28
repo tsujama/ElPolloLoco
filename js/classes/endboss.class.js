@@ -56,7 +56,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.positionX = 2500;
+        this.positionX = 4800;
     }
 
     throwChicken() {

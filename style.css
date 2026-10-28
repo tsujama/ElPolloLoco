@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Bangers";
+    src: url("./fonts/Bangers-Regular.ttf") format("truetype");
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -10,6 +15,12 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #f4c16e;
+    font-family: "Bangers";
+}
+
+button {
+    font-family: "Bangers";
+    letter-spacing: 1px;
 }
 
 canvas {
@@ -121,16 +132,15 @@ canvas {
     height: 100vh;
     background-color: black;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 #gameContainer:fullscreen canvas {
     display: block;
-    width: min(100vw, 135vh);
+    width: min(100vw, 150vh);
     height: auto;
-    aspect-ratio: 3 / 2;
+    margin: auto;
 }
 
 #gameContainer {

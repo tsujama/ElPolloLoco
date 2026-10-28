@@ -14,7 +14,7 @@ class VendingMachine extends DrawableObject {
         'img/vending_m/vending_12.png',
     ];
 
-    positionX = 1000;
+    positionX = 3800;
     positionY = 250;
     width = 200;
     height = 200;

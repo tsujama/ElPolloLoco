@@ -8,6 +8,7 @@ class World {
     statusbar_coins = new Statusbar(40);
     statusbar_bottles = new Statusbar(80);
     throwableObjects = [];
+    coinRespawnTimers = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -62,7 +63,7 @@ class World {
     }
 
     checkThrowObjects() {
-        if (this.keyboard.F && this.character.bottles > 0) {
+        if (this.keyboard.F && this.character.bottles >= 20) {
             let x = this.character.otherDirection
                 ? this.character.positionX
                 : this.character.positionX + 100;
@@ -100,13 +101,6 @@ class World {
             let isAboveEnemy = previousCharacterFeet !== null && previousCharacterFeet <= enemyTop && characterFeet >= enemyTop;
 
             if ((isColliding || isBossAttack) && isAlive && isEnemyAlive) {
-                if (enemy instanceof Chicken) {
-                    console.log(
-                        "Vorherige Füße:", previousCharacterFeet,
-                        "Huhn oben:", enemyTop,
-                        "Aktuelle Füße:", characterFeet
-                    );
-                }
                 if (enemy instanceof Endboss) {
                     if (enemy.isAttacking()) {
                         if (!this.character.isHurt()) {
@@ -139,14 +133,24 @@ class World {
         for (let i = this.level.coins.length - 1; i >= 0; i--) {
             let coin = this.level.coins[i];
 
-            let isColliding = this.character.isColliding(coin);
-
-            if (isColliding) {
+            if (this.character.isColliding(coin)) {
                 this.character.collectCoins();
 
-                this.updateStatusbar(this.statusbar_coins, this.character.coins, this.statusbar_coins.IMAGES_COINS);
-
+                this.updateStatusbar(
+                    this.statusbar_coins,
+                    this.character.coins,
+                    this.statusbar_coins.IMAGES_COINS
+                );
+                coin.stopAnimation();
                 this.level.coins.splice(i, 1);
+
+                let timer = setTimeout(() => {
+                    this.level.coins.push(
+                        new Coins(coin.positionX, coin.positionY)
+                    );
+                }, 10000);
+
+                this.coinRespawnTimers.push(timer);
             }
         }
     }
@@ -230,27 +234,22 @@ class World {
     //     }, 100);
     // }
     
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.ctx.translate(Math.round(this.camera_x), 0);
-        
-        this.drawBackground();
+    this.ctx.translate(Math.round(this.camera_x), 0);
 
-        this.ctx.translate(-Math.round(this.camera_x), 0);
-        // --- space for fixed objects ---
-        this.drawStatusbars();
-        this.ctx.translate(Math.round(this.camera_x), 0);
+    this.drawBackground();
+    this.drawGameObjects();
 
-        this.drawGameObjects();
+    this.ctx.translate(-Math.round(this.camera_x), 0);
 
-        this.ctx.translate(-Math.round(this.camera_x), 0);
+    this.drawStatusbars();
 
-        // draw wird immer wieder aufgerufen.
-        this.animationFrameId = requestAnimationFrame(() => {
-            this.draw();
-        });
-    }
+    this.animationFrameId = requestAnimationFrame(() => {
+        this.draw();
+    });
+}
 
     drawBackground() {
         this.addObjectsToMap(this.level.backgroundObjects);
@@ -339,5 +338,8 @@ class World {
         this.throwableObjects.forEach((bottle) => {
             bottle.stopMovement();
         });
+
+        this.coinRespawnTimers.forEach(timer => clearTimeout(timer));
+        this.level.coins.forEach(coin => coin.stopAnimation());
     }
 }
