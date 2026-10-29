@@ -1,15 +1,20 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>El Pollo Loco</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="./img/3_enemies_chicken/chicken_normal/1_walk/1_w.png">
+
     <script src="./js/classes/drawableObject.class.js"></script>
     <script src="./js/classes/movableObject.class.js"></script>
     <script src="./js/classes/character.class.js"></script>
     <script src="./js/classes/chicken.class.js"></script>
+    <script src="./js/classes/chickenSmall.class.js"></script>
     <script src="./js/classes/throwableChicken.class.js"></script>
     <script src="./js/classes/cloud.class.js"></script>
     <script src="./js/classes/vendingMachine.class.js"></script>
@@ -23,57 +28,171 @@
     <script src="./js/classes/endboss.class.js"></script>
     <script src="./js/levels/level1.js"></script>
 </head>
+
 <body>
+
     <div id="startScreen">
-        <button id="startButton" onclick="startGame()">Spiel starten</button>
-        <button id="controlsButton" onclick="showControls()">Steuerung</button>
-        <button id="imprintButton" onclick="showImprint()">Impressum</button>
-        
+
+        <button id="startButton" onclick="startGame()">
+            Spiel starten
+        </button>
+
+        <button id="controlsButton" onclick="showControls()">
+            Steuerung
+        </button>
+
+        <button id="imprintButton" onclick="showImprint()">
+            Impressum
+        </button>
+
+        <!-- Impressum -->
+
         <div id="imprintScreen">
             <h2>Impressum</h2>
 
-            <p>El Pollo Loco – Portfolio-Projekt</p>
-            <p>Dieses Spiel wurde im Rahmen meiner Webentwicklungs-Ausbildung erstellt.</p>
-            <p>Die verwendeten Spielgrafiken dienen ausschließlich zu Lern- und Demonstrationszwecken.</p>
+            <div class="screenContent">
+
+                <h3>Angaben zum Anbieter</h3>
+                <p>
+                    Vorname Nachname<br>
+                    Straße und Hausnummer<br>
+                    Postleitzahl und Ort<br>
+                    Deutschland
+                </p>
+
+                <h3>Kontakt</h3>
+                <p>
+                    E-Mail: deine-email@beispiel.de
+                </p>
+
+                <h3>Über dieses Projekt</h3>
+                <p>
+                    El Pollo Loco ist ein nicht-kommerzielles
+                    Portfolio-Projekt, das im Rahmen meiner
+                    Webentwicklungs-Ausbildung entstanden ist.
+                </p>
+
+                <h3>Verwendete Inhalte</h3>
+                <p>
+                    Die im Spiel verwendeten Grafiken und weiteren
+                    Medien werden im Rahmen dieses Lernprojekts
+                    eingesetzt. Die jeweiligen Rechte verbleiben
+                    bei den Rechteinhabern.
+                </p>
+
+            </div>
 
             <button onclick="hideImprint()">Zurück</button>
         </div>
 
+        <!-- Steuerung -->
+
         <div id="controlsScreen">
             <h2>Steuerung</h2>
 
-            <div class="desktopControls">
-                <p>A / D – Laufen</p>
-                <p>Leertaste – Springen</p>
-                <p>F – Flasche werfen</p>
-                <p>E – Flaschen kaufen</p>
-            </div>
+            <div class="screenContent">
 
-            <div class="touchControls">
-                <p>◀ / ▶ – Laufen</p>
-                <p>▲ – Springen</p>
-                <p>🍾 – Flasche werfen</p>
-                <p>E – Flaschen kaufen</p>
+                <!-- Desktop-Steuerung -->
+
+                <div class="desktopControls">
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key">A</span>
+                            <span class="key">D</span>
+                        </div>
+                        <span>Laufen</span>
+                    </div>
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key keyWide">Leertaste</span>
+                        </div>
+                        <span>Springen</span>
+                    </div>
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key">F</span>
+                        </div>
+                        <span>Flasche werfen</span>
+                    </div>
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key">E</span>
+                        </div>
+                        <span>Flaschen kaufen</span>
+                    </div>
+
+                </div>
+
+                <!-- Handy-Steuerung -->
+
+                <div class="touchControls">
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key touchKey">◀</span>
+                            <span class="key touchKey">▶</span>
+                        </div>
+                        <span>Laufen</span>
+                    </div>
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key touchKey">▲</span>
+                        </div>
+                        <span>Springen</span>
+                    </div>
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key touchKey">🍾</span>
+                        </div>
+                        <span>Flasche werfen</span>
+                    </div>
+
+                    <div class="controlRow">
+                        <div class="controlKeys">
+                            <span class="key touchKey">E</span>
+                        </div>
+                        <span>Flaschen kaufen</span>
+                    </div>
+
+                </div>
+
             </div>
 
             <button onclick="hideControls()">Zurück</button>
         </div>
+
     </div>
+
+    <!-- Game Over -->
 
     <div id="gameOverScreen">
         <button onclick="restartGame()">Erneut spielen</button>
         <button onclick="backToHome()">Zum Startbildschirm</button>
     </div>
 
+    <!-- Game Won -->
+
     <div id="gameWonScreen">
         <button onclick="restartGame()">Erneut spielen</button>
         <button onclick="backToHome()">Zum Startbildschirm</button>
     </div>
 
+    <!-- Spielbereich -->
+
     <div id="gameContainer">
+
         <canvas id="canvas" width="720" height="480"></canvas>
 
+        <!-- Mobile Steuerung -->
+
         <div id="mobileControls">
+
             <div class="controlGroup">
                 <button id="moveLeft">◀</button>
                 <button id="moveRight">▶</button>
@@ -84,20 +203,29 @@
                 <button id="throw">🍾</button>
                 <button id="jump">▲</button>
             </div>
+
         </div>
 
-        <button id="fullscreenButton"
-                onclick="toggleFullscreen()"
-                aria-label="Vollbild umschalten"
-                title="Vollbild">
+        <!-- Vollbild-Button -->
+
+        <button
+            id="fullscreenButton"
+            onclick="toggleFullscreen()"
+            aria-label="Vollbild umschalten"
+            title="Vollbild"
+        >
             ⛶
         </button>
+
     </div>
 
-<div id="rotateScreen">
-    <p>📱 Bitte drehe dein Gerät ins Querformat, um zu spielen.</p>
-</div>
+    <!-- Hinweis zum Drehen des Handys -->
 
-<script src="./js/game.js"></script>
+    <div id="rotateScreen">
+        <p>📱 Bitte drehe dein Gerät ins Querformat, um zu spielen.</p>
+    </div>
+
+    <script src="./js/game.js"></script>
+
 </body>
 </html>

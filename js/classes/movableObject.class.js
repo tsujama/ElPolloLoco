@@ -19,8 +19,10 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        if (this instanceof ThrowableObject) { // throwable object should always fall
+        if (this instanceof ThrowableObject) {
             return true;
+        } else if (this instanceof ChickenSmall) {
+            return this.positionY < 365;
         } else {
             return this.positionY < 180;
         }
@@ -42,8 +44,12 @@ class MovableObject extends DrawableObject {
         }
     }
 
-    hit() {
-        this.life -= 5;
+    hit(enemy) {
+        if(enemy instanceof Endboss) {
+            this.life -= 20;
+        } else {
+            this.life -= 5;
+        }
         if(this.life <= 0) {
             this.life = 0;
         } else {
@@ -54,7 +60,7 @@ class MovableObject extends DrawableObject {
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit; //Difference in ms
         timePassed = timePassed / 1000; // Difference in s
-        return timePassed < 1;
+        return timePassed < 0.4;
     }
 
     isDead() {

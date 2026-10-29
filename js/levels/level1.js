@@ -1,14 +1,16 @@
 function createLevel1() {
     return new Level(
         [
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
+            new Chicken(400 + Math.random() * 200),
+            new Chicken(900 + Math.random() * 200),
+            new Chicken(1400 + Math.random() * 200),
+            new Chicken(1900 + Math.random() * 200),
+            new Chicken(2400 + Math.random() * 200),
+            new Chicken(2900 + Math.random() * 200),
+            new Chicken(3400 + Math.random() * 200),
+            new Chicken(4000 + Math.random() * 200),
+            new ChickenSmall(1600),
+            new ChickenSmall(3200),
             new Endboss()
         ],
         [

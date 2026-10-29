@@ -104,7 +104,7 @@ class World {
                 if (enemy instanceof Endboss) {
                     if (enemy.isAttacking()) {
                         if (!this.character.isHurt()) {
-                            this.character.hit();
+                            this.character.hit(enemy);
                         }
                         this.updateStatusbar(
                             this.statusbar_life,
@@ -116,7 +116,7 @@ class World {
                     enemy.life = 0;
                 } else {
                     if (!this.character.isHurt()) {
-                    this.character.hit();
+                    this.character.hit(enemy);
                 }
                     this.updateStatusbar(
                     this.statusbar_life,

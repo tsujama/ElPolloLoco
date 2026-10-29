@@ -15,7 +15,7 @@ function startGame() {
 }
 
 function showControls() {
-    document.getElementById("controlsScreen").style.display = "block";
+    document.getElementById("controlsScreen").style.display = "flex";
 }
 
 function hideControls() {
@@ -23,7 +23,7 @@ function hideControls() {
 }
 
 function showImprint() {
-    document.getElementById("imprintScreen").style.display = "block";
+    document.getElementById("imprintScreen").style.display = "flex";
 }
 
 function hideImprint() {

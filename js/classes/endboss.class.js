@@ -77,10 +77,10 @@ class Endboss extends MovableObject {
         if (this.isCharacterNearby() && !this.isCharacterInAttackRange()) {
             if (this.world.character.positionX < this.positionX) {
                 this.otherDirection = false;
-                this.positionX -= 5;
+                this.positionX -= 10;
             } else {
                 this.otherDirection = true;
-                this.positionX += 5;
+                this.positionX += 10;
             }
         }
     }
